@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  each request in requests
+    .card.mt-1
+      .card-header
+        | #{request.method} - #{request.createdAt}
+      .card-bodyp-5
+        ul.list-group.list-group-flush
+          li.list-group-item URL: #{JSON.stringify(request.url)}
+          li.list-group-item Body: #{JSON.stringify(request.requestBody)}
+          li.list-group-item Headers: #{JSON.stringify(request.requestHeaders)}
