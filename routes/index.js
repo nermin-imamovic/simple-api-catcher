@@ -22,7 +22,8 @@ router.post('/post(/*)?', function (req, res, next) {
         url: req.url,
         requestBody: req.body,
         requestHeaders: req.headers,
-        createdAt: new Date()
+        createdAt: new Date(),
+        createdAtTimestamp: new Date().getTime()
     });
 
     res.send(req.body);
@@ -35,7 +36,8 @@ router.get('/get(/*)?', function (req, res, next) {
         url: req.url,
         requestBody: null,
         requestHeaders: req.headers,
-        createdAt: new Date()
+        createdAt: new Date(),
+        createdAtTimestamp: new Date().getTime()
     });
 
     res.send({
@@ -55,7 +57,7 @@ router.get('/api', function (req, res, next) {
         }
 
         if (req.query.from) {
-            filter.from = {$gt: Date.parse(req.query.from)}
+            filter.createdAtTimestamp = {$gt: new Date(req.query.from).getTime()}
         }
 
         db.find(filter).toArray()
