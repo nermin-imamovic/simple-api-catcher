@@ -31,4 +31,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: nerminimamovic/simple-api-catcher:latest
+          tags: nerminimamovic/simple-api-catcher:1.0.0
