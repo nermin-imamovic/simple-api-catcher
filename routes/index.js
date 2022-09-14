@@ -4,43 +4,71 @@ const PicoDB = require('picodb');
 const db = PicoDB();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  db.find({}).toArray()
-      .then((resp) => {
-        resp.reverse();
-        res.render('index', { requests: resp });
-      })
-      .catch((err) => {
-        // your code here
-      });
+router.get('/', function (req, res, next) {
+    db.find({}).toArray()
+        .then((resp) => {
+            resp.reverse();
+            res.render('index', {requests: resp});
+        })
+        .catch((err) => {
+            // your code here
+        });
 });
 
 /* GET users listing. */
-router.post('/post(/*)?', function(req, res, next) {
-  db.insertOne({
-    method: "POST",
-    url: req.url,
-    requestBody: req.body,
-    requestHeaders: req.headers,
-    createdAt: new Date()
-  });
+router.post('/post(/*)?', function (req, res, next) {
+    db.insertOne({
+        method: "POST",
+        url: req.url,
+        requestBody: req.body,
+        requestHeaders: req.headers,
+        createdAt: new Date()
+    });
 
-  res.send(req.body);
+    res.send(req.body);
 });
 
 /* GET users listing. */
-router.get('/get(/*)?', function(req, res, next) {
-  db.insertOne({
-    method: "GET",
-    url: req.url,
-    requestBody: null,
-    requestHeaders: req.headers,
-    createdAt: new Date()
-  });
+router.get('/get(/*)?', function (req, res, next) {
+    db.insertOne({
+        method: "GET",
+        url: req.url,
+        requestBody: null,
+        requestHeaders: req.headers,
+        createdAt: new Date()
+    });
 
-  res.send({
-    'ok': true
-  });
+    res.send({
+        'ok': true
+    });
+});
+
+
+router.get('/api', function (req, res, next) {
+
+    //let url, from, filterBody;
+
+    try {
+        let filter = {};
+        if (req.query.url) {
+            filter.url = req.query.url;
+        }
+
+        if (req.query.from) {
+            filter.from = {$gt: Date.parse(req.query.from)}
+        }
+
+        db.find(filter).toArray()
+            .then((resp) => {
+                res.send(resp);
+            })
+            .catch((err) => {
+                next(err)
+            });
+    } catch (err){
+        next(err)
+    }
+
 });
 
 
