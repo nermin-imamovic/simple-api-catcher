@@ -52,6 +52,7 @@ router.get('/api', function (req, res, next) {
 
     try {
         let filter = {};
+        let bodyFilter = {};
         if (req.query.url) {
             filter.url = req.query.url;
         }
@@ -60,14 +61,33 @@ router.get('/api', function (req, res, next) {
             filter.createdAtTimestamp = {$gt: new Date(req.query.from).getTime()}
         }
 
+        Object.keys(req.query).forEach(function (key) {
+            if (key != 'url' && key != 'from') {
+                bodyFilter[key] = req.query[key];
+            }
+        })
+
         db.find(filter).toArray()
             .then((resp) => {
-                res.send(resp);
+                if (Object.keys(bodyFilter).length > 0) {
+                    let result = resp.filter(function (item) {
+                        let is = true;
+                        Object.keys(bodyFilter).forEach(function (bodyField){
+                            if(!item.requestBody[bodyField] || item.requestBody[bodyField] != bodyFilter[bodyField]){
+                                is = false;
+                            }
+                        })
+                        return is;
+                    })
+                    res.send(result);
+                } else {
+                    res.send(resp);
+                }
             })
             .catch((err) => {
                 next(err)
             });
-    } catch (err){
+    } catch (err) {
         next(err)
     }
 

@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  p REST API: /api?url={}&from={}
+  p REST API: /api?url={}&from={}&{body field}={body field value}
   each request in requests
     .card.mt-1
       .card-header
