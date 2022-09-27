@@ -3,6 +3,19 @@ var router = express.Router();
 const PicoDB = require('picodb');
 const db = PicoDB();
 
+const getValue = (obj, key) => {
+    const keys = key.split(".");
+    let value = obj;
+    for (let i = 0; i < keys.length; i++) {
+        value = value[keys[i]];
+        if (!value) {
+            break;
+        }
+    }
+    return value;
+};
+
+
 /* GET home page. */
 router.get('/', function (req, res, next) {
     db.find({}).toArray()
@@ -72,8 +85,8 @@ router.get('/api', function (req, res, next) {
                 if (Object.keys(bodyFilter).length > 0) {
                     let result = resp.filter(function (item) {
                         let is = true;
-                        Object.keys(bodyFilter).forEach(function (bodyField){
-                            if(!item.requestBody[bodyField] || item.requestBody[bodyField] != bodyFilter[bodyField]){
+                        Object.keys(bodyFilter).forEach(function (bodyField) {
+                            if (!(getValue(item.requestBody, bodyField) == bodyFilter[bodyField])) {
                                 is = false;
                             }
                         })
